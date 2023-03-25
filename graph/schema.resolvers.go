@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 
+	"github.com/ComputationTime/finesse-api/database"
 	"github.com/ComputationTime/finesse-api/graph/model"
 )
 
@@ -15,8 +16,13 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	var user model.User
 	user.Email = input.Email
 	user.Password = input.Password
-	user.ID = "random  string"
 	return "worked!", nil
+}
+
+// CreateContent is the resolver for the createContent field.
+func (r *mutationResolver) CreateContent(ctx context.Context, input model.NewContent) (string, error) {
+	out, err := database.CreateContent(input.Source, input.URL)
+	return out, err
 }
 
 // Login is the resolver for the login field.
@@ -31,15 +37,10 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input *model.Refres
 
 // Content is the resolver for the content field.
 func (r *queryResolver) Content(ctx context.Context, num *int) ([]*model.Content, error) {
-	var content_list []*model.Content
+	out, err := database.GetContent(5)
 
-	dummy := model.Content{
-		Source: "It works!",
-		URL:    "www.google.com",
-	}
 
-	content_list = append(content_list, &dummy)
-	return content_list, nil
+	return out, err
 }
 
 // Mutation returns MutationResolver implementation.

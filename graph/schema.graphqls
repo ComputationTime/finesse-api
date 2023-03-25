@@ -3,13 +3,13 @@
 # https://gqlgen.com/getting-started/
 
 type Content {
-  _id: String!
+  content_id: Int!
   source: String!
   url: String!
 }
 
 type User {
-  _id: String!
+  _id: Int!
   email: String!
   password: String!
 }
@@ -32,8 +32,14 @@ input Login {
   password: String!
 }
 
+input NewContent {
+  source: String!
+  url: String!
+}
+
 type Mutation {
   createUser(input: NewUser!): String!
+  createContent(input: NewContent!): String!
   login(input: Login): String!
   refreshToken(input: RefreshToken): String!
 }

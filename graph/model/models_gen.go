@@ -3,14 +3,19 @@
 package model
 
 type Content struct {
-	ID     string `json:"_id"`
-	Source string `json:"source"`
-	URL    string `json:"url"`
+	ContentID int    `json:"content_id"`
+	Source    string `json:"source"`
+	URL       string `json:"url"`
 }
 
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type NewContent struct {
+	Source string `json:"source"`
+	URL    string `json:"url"`
 }
 
 type NewUser struct {
@@ -23,7 +28,7 @@ type RefreshToken struct {
 }
 
 type User struct {
-	ID       string `json:"_id"`
+	ID       int    `json:"_id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

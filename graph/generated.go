@@ -51,10 +51,11 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateContent func(childComplexity int, input model.NewContent) int
-		CreateUser    func(childComplexity int, input model.NewUser) int
-		Login         func(childComplexity int, input *model.Login) int
-		RefreshToken  func(childComplexity int, input *model.RefreshToken) int
+		CreateContent  func(childComplexity int, input model.NewContent) int
+		CreateNContent func(childComplexity int, input model.NewContentArray) int
+		CreateUser     func(childComplexity int, input model.NewUser) int
+		Login          func(childComplexity int, input *model.Login) int
+		RefreshToken   func(childComplexity int, input *model.RefreshToken) int
 	}
 
 	Query struct {
@@ -70,6 +71,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.NewUser) (string, error)
+	CreateNContent(ctx context.Context, input model.NewContentArray) (string, error)
 	CreateContent(ctx context.Context, input model.NewContent) (string, error)
 	Login(ctx context.Context, input *model.Login) (string, error)
 	RefreshToken(ctx context.Context, input *model.RefreshToken) (string, error)
@@ -125,6 +127,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateContent(childComplexity, args["input"].(model.NewContent)), true
+
+	case "Mutation.createNContent":
+		if e.complexity.Mutation.CreateNContent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createNContent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateNContent(childComplexity, args["input"].(model.NewContentArray)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -205,6 +219,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputLogin,
 		ec.unmarshalInputNewContent,
+		ec.unmarshalInputNewContentArray,
 		ec.unmarshalInputNewUser,
 		ec.unmarshalInputRefreshToken,
 	)
@@ -293,6 +308,21 @@ func (ec *executionContext) field_Mutation_createContent_args(ctx context.Contex
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewContent2githubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContent(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createNContent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewContentArray
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewContentArray2githubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContentArray(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -594,6 +624,60 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createNContent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createNContent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateNContent(rctx, fc.Args["input"].(model.NewContentArray))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createNContent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createNContent_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -2928,6 +3012,34 @@ func (ec *executionContext) unmarshalInputNewContent(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewContentArray(ctx context.Context, obj interface{}) (model.NewContentArray, error) {
+	var it model.NewContentArray
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"array"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "array":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("array"))
+			it.Array, err = ec.unmarshalNNewContent2ᚕᚖgithubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContent(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (model.NewUser, error) {
 	var it model.NewUser
 	asMap := map[string]interface{}{}
@@ -3064,6 +3176,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createUser(ctx, field)
+			})
+
+		case "createNContent":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createNContent(ctx, field)
 			})
 
 		case "createContent":
@@ -3599,6 +3717,28 @@ func (ec *executionContext) unmarshalNNewContent2githubᚗcomᚋComputationTime�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNNewContent2ᚕᚖgithubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContent(ctx context.Context, v interface{}) ([]*model.NewContent, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*model.NewContent, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalONewContent2ᚖgithubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContent(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalNNewContentArray2githubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContentArray(ctx context.Context, v interface{}) (model.NewContentArray, error) {
+	res, err := ec.unmarshalInputNewContentArray(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3919,6 +4059,14 @@ func (ec *executionContext) unmarshalOLogin2ᚖgithubᚗcomᚋComputationTimeᚋ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputLogin(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalONewContent2ᚖgithubᚗcomᚋComputationTimeᚋfinesseᚑapiᚋgraphᚋmodelᚐNewContent(ctx context.Context, v interface{}) (*model.NewContent, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputNewContent(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

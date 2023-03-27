@@ -37,8 +37,13 @@ input NewContent {
   url: String!
 }
 
+input NewContentArray {
+  array: [NewContent]!
+}
+
 type Mutation {
   createUser(input: NewUser!): String!
+  createNContent(input: NewContentArray!): String!
   createContent(input: NewContent!): String!
   login(input: Login): String!
   refreshToken(input: RefreshToken): String!

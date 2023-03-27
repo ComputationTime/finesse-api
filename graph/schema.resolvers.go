@@ -19,6 +19,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return "worked!", nil
 }
 
+// CreateNContent is the resolver for the createNContent field.
+func (r *mutationResolver) CreateNContent(ctx context.Context, input model.NewContentArray) (string, error) {
+	// out, err := database.CreateNContent(input.Array)
+	return "", nil
+}
+
 // CreateContent is the resolver for the createContent field.
 func (r *mutationResolver) CreateContent(ctx context.Context, input model.NewContent) (string, error) {
 	out, err := database.CreateContent(input.Source, input.URL)
@@ -37,9 +43,7 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input *model.Refres
 
 // Content is the resolver for the content field.
 func (r *queryResolver) Content(ctx context.Context, num *int) ([]*model.Content, error) {
-	out, err := database.GetContent(5)
-
-
+	out, err := database.GetContent(int32(*num))
 	return out, err
 }
 

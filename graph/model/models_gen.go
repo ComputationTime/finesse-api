@@ -18,6 +18,10 @@ type NewContent struct {
 	URL    string `json:"url"`
 }
 
+type NewContentArray struct {
+	Array []*NewContent `json:"array"`
+}
+
 type NewUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

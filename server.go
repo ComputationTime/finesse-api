@@ -13,7 +13,6 @@ import (
 	"github.com/rs/cors"
 )
 
-
 func main() {
 	router := chi.NewRouter()
 
@@ -44,15 +43,20 @@ func main() {
         },
     })
 
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/graphql", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
+
+	// serve create-react-app build folder
+	router.Handle("/*", http.FileServer(http.Dir("build")))
+
+	log.Printf("Listening on http://localhost:%s...", port)
+
 
 	err := http.ListenAndServe(":8000", router)
 	if err != nil {
 		panic(err)
 	}
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 

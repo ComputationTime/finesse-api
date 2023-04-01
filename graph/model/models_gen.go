@@ -8,6 +8,16 @@ type Content struct {
 	URL       string `json:"url"`
 }
 
+type User struct {
+	ID       int    `json:"_id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RefreshToken struct {
+	Token string `json:"token"`
+}
+
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -27,12 +37,6 @@ type NewUser struct {
 	Password string `json:"password"`
 }
 
-type RefreshToken struct {
-	Token string `json:"token"`
-}
 
-type User struct {
-	ID       int    `json:"_id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+
+

@@ -27,8 +27,8 @@ func (r *mutationResolver) CreateNContent(ctx context.Context, input model.NewCo
 
 // CreateContent is the resolver for the createContent field.
 func (r *mutationResolver) CreateContent(ctx context.Context, input model.NewContent) (string, error) {
-	out, err := database.CreateContent(input.Source, input.URL)
-	return out, err
+	err := database.CreateContent(input.Source, input.URL)
+	return "", err
 }
 
 // Login is the resolver for the login field.

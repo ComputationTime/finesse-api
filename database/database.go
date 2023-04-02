@@ -2,16 +2,15 @@ package database
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
-	"strconv"
 	"time"
 
 	"github.com/ComputationTime/finesse-api/graph/model"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var database = InitDatabase()
@@ -23,48 +22,49 @@ func InitDatabase() *mongo.Database {
     if err != nil {
         log.Fatal(err)
     }
+    var db = client.Database("finesse")
 
-	database = client.Database("finesse")
-
-    return database
+    return db
 }
 
 func CreateContent(source string, url string) error {
+    
 	contentObj := model.Content{
 		Source:    source,
 		URL:       url,
 	}
 
-	_, err = database.Collection("content").InsertOne(context.Background(), contentObj)
+	_, err := database.Collection("content").InsertOne(context.Background(), contentObj)
+
 	return err
 }
 
-func CreateNContent(documents []*model.NewContent) (int, error) {
-
-
-	// do we need to change the input type?
-	documents := []interface{}{
-        bson.D{
-            {"name", "John"},
-            {"age", 30},
-        },
-        bson.D{
-            {"name", "Jane"},
-            {"age", 25},
-        },
-        bson.D{
-            {"name", "Bob"},
-            {"age", 50},
-        },
+func convertFromContent(slice []*model.NewContent) []interface{} {
+    var result []interface{}
+    for _, v := range slice {
+        result = append(result, v)
     }
+    return result
+}
 
-    _, err = collection.InsertMany(context.Background(), documents)
+func convertToContent(slice []interface{}) []*model.NewContent {
+    var result []*model.NewContent
+    for _, v := range slice {
+        result = append(result, v.(*model.NewContent))
+    }
+    return result
+}
+
+func CreateNContent(documents []*model.NewContent) error {
+    db_documents := convertFromContent(documents)
+
+    _, err := database.Collection("content").InsertMany(context.Background(), db_documents)
     if err != nil {
         log.Fatal(err)
-		return nil, err
+		return err
     }
 
-	return "", nil
+	return nil
 }
 
 func TimeUUID() int {
@@ -72,7 +72,24 @@ func TimeUUID() int {
 	return int(ts) + int(rand.Uint32())
 }
 
-// hopefully won't need this func and we can make a general get function
-func GetContent(n int32) ([]*model.Content, error){
-	
+func GetContent(n int) ([]*model.Content, error) {
+    var result []*model.Content
+    opts := options.Find().SetSort(bson.D{{Key: "$natural", Value: -1}}).SetLimit(int64(n))
+	cursor, err := database.Collection("content").Find(context.Background(), nil, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	for cursor.Next(context.Background()) {
+		var content model.Content
+		err := cursor.Decode(&content)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &content)
+	}
+
+    fmt.Println(result)
+
+    return result, nil
 }

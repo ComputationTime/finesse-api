@@ -51,7 +51,6 @@ func main() {
 
 	log.Printf("Listening on http://localhost:%s...", port)
 
-
 	err := http.ListenAndServe(":8000", router)
 	if err != nil {
 		panic(err)

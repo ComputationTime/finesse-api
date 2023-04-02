@@ -43,8 +43,8 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input *model.Refres
 
 // Content is the resolver for the content field.
 func (r *queryResolver) Content(ctx context.Context, num *int) ([]*model.Content, error) {
-	out, err := database.GetContent(int32(*num))
-	return out, err
+	a, b := database.GetContent(*num)
+	return a, b
 }
 
 // Mutation returns MutationResolver implementation.

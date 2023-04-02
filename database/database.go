@@ -16,22 +16,22 @@ import (
 var database = InitDatabase()
 
 func InitDatabase() *mongo.Database {
-    clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-    client, err := mongo.Connect(context.Background(), clientOptions)
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	client, err := mongo.Connect(context.Background(), clientOptions)
 
-    if err != nil {
-        log.Fatal(err)
-    }
-    var db = client.Database("finesse")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var db = client.Database("finesse")
 
-    return db
+	return db
 }
 
 func CreateContent(source string, url string) error {
-    
+
 	contentObj := model.Content{
-		Source:    source,
-		URL:       url,
+		Source: source,
+		URL:    url,
 	}
 
 	_, err := database.Collection("content").InsertOne(context.Background(), contentObj)
@@ -40,29 +40,29 @@ func CreateContent(source string, url string) error {
 }
 
 func convertFromContent(slice []*model.NewContent) []interface{} {
-    var result []interface{}
-    for _, v := range slice {
-        result = append(result, v)
-    }
-    return result
+	var result []interface{}
+	for _, v := range slice {
+		result = append(result, v)
+	}
+	return result
 }
 
 func convertToContent(slice []interface{}) []*model.NewContent {
-    var result []*model.NewContent
-    for _, v := range slice {
-        result = append(result, v.(*model.NewContent))
-    }
-    return result
+	var result []*model.NewContent
+	for _, v := range slice {
+		result = append(result, v.(*model.NewContent))
+	}
+	return result
 }
 
 func CreateNContent(documents []*model.NewContent) error {
-    db_documents := convertFromContent(documents)
+	db_documents := convertFromContent(documents)
 
-    _, err := database.Collection("content").InsertMany(context.Background(), db_documents)
-    if err != nil {
-        log.Fatal(err)
+	_, err := database.Collection("content").InsertMany(context.Background(), db_documents)
+	if err != nil {
+		log.Fatal(err)
 		return err
-    }
+	}
 
 	return nil
 }
@@ -73,9 +73,9 @@ func TimeUUID() int {
 }
 
 func GetContent(n int) ([]*model.Content, error) {
-    var result []*model.Content
-    opts := options.Find().SetSort(bson.D{{Key: "$natural", Value: -1}}).SetLimit(int64(n))
-	cursor, err := database.Collection("content").Find(context.Background(), nil, opts)
+	var result []*model.Content
+	opts := options.Find().SetSort(bson.D{{Key: "$natural", Value: -1}}).SetLimit(int64(n))
+	cursor, err := database.Collection("content").Find(context.Background(), bson.D{{}}, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func GetContent(n int) ([]*model.Content, error) {
 		result = append(result, &content)
 	}
 
-    fmt.Println(result)
+	fmt.Println(result)
 
-    return result, nil
+	return result, nil
 }

@@ -77,6 +77,7 @@ func GetContent(n int) ([]*model.Content, error) {
 	opts := options.Find().SetSort(bson.D{{Key: "$natural", Value: -1}}).SetLimit(int64(n))
 	cursor, err := database.Collection("content").Find(context.Background(), bson.D{{}}, opts)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -84,6 +85,7 @@ func GetContent(n int) ([]*model.Content, error) {
 		var content model.Content
 		err := cursor.Decode(&content)
 		if err != nil {
+			fmt.Println(err)
 			return nil, err
 		}
 		result = append(result, &content)

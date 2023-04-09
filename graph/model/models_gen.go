@@ -3,23 +3,16 @@
 package model
 
 type Content struct {
-	ContentID int    `json:"content_id"`
-	Source    string `json:"source"`
-	URL       string `json:"url"`
-}
-
-type User struct {
-	ID       int    `json:"_id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type RefreshToken struct {
-	Token string `json:"token"`
+	ContentID string  `json:"content_id"`
+	Source    string  `json:"source"`
+	URL       string  `json:"url"`
+	Views     int     `json:"views"`
+	Likes     int     `json:"likes"`
+	Score     float64 `json:"score"`
 }
 
 type Login struct {
-	Email    string `json:"email"`
+	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
@@ -33,10 +26,27 @@ type NewContentArray struct {
 }
 
 type NewUser struct {
-	Email    string `json:"email"`
+	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
+type RefreshToken struct {
+	Token string `json:"token"`
+}
 
+type SeenContent struct {
+	ContentID string `json:"content_id"`
+	Liked     bool   `json:"liked"`
+}
 
+type User struct {
+	UserID   int            `json:"user_id"`
+	Username string         `json:"username"`
+	Watched  []*SeenContent `json:"watched"`
+}
 
+type UserAuth struct {
+	UserID   int    `json:"user_id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

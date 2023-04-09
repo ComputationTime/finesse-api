@@ -13,9 +13,8 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
-	var user model.User
-	user.Email = input.Email
-	user.Password = input.Password
+	// add user credentials to UserAuth table
+	// add user to User table
 	return "worked!", nil
 }
 
@@ -33,6 +32,7 @@ func (r *mutationResolver) CreateContent(ctx context.Context, input model.NewCon
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input *model.Login) (string, error) {
+	//
 	return "token", nil
 }
 

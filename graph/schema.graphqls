@@ -3,15 +3,29 @@
 # https://gqlgen.com/getting-started/
 
 type Content {
-  content_id: Int!
+  content_id: String!
   source: String!
   url: String!
+  views: Int!
+  likes: Int!
+  score: Float!
+}
+
+type SeenContent {
+  content_id: String!
+  liked: Boolean!
+}
+
+type UserAuth {
+  user_id: Int!
+  username: String!
+  password: String!
 }
 
 type User {
-  _id: Int!
-  email: String!
-  password: String!
+  user_id: Int!
+  username: String!
+  watched: [SeenContent]
 }
 
 type Query {
@@ -23,12 +37,12 @@ input RefreshToken {
 }
 
 input NewUser {
-  email: String!
+  username: String!
   password: String!
 }
 
 input Login {
-  email: String!
+  username: String!
   password: String!
 }
 

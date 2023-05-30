@@ -16,7 +16,7 @@ import (
 var database = InitDatabase()
 
 func InitDatabase() *mongo.Database {
-	clientOptions := options.Client().ApplyURI("mongodb://172.31.0.2:27017/finesse")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/finesse")
 	client, err := mongo.Connect(context.Background(), clientOptions)
 
 	if err != nil {

@@ -47,7 +47,7 @@ func main() {
 	router.Handle("/query", srv)
 
 	// serve create-react-app build folder
-	router.Handle("/*", http.FileServer(http.Dir("build")))
+	router.Handle("/*", http.FileServer(http.Dir("../finesse-frontend/build")))
 
 	log.Printf("Listening on http://localhost:%s...", port)
 
